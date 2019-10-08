@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,7 +113,7 @@ public class DAO {
 	 */
 	CustomerEntity findCustomer(int customerID) throws DAOException {
             
-            String sql = "SELECT CUSTOMER_ID,NAME,ADDRESSLINE1 FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+            String sql = "SELECT NAME,ADDRESSLINE1 FROM CUSTOMER WHERE CUSTOMER_ID = ?";
                 try (Connection connection = myDataSource.getConnection();
 			PreparedStatement stmt = connection.prepareStatement(sql)){
                         stmt.setInt(1, customerID);
@@ -139,7 +140,29 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	List<CustomerEntity> customersInState(String state) throws DAOException {
-		throw new UnsupportedOperationException("Pas encore implémenté");
+            
+            List<CustomerEntity> result = new ArrayList<>();
+            String sql = "SELECT * FROM CUSTOMER WHERE STATE LIKE ?";
+            try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)){
+                        stmt.setString(1, state);
+                        ResultSet rs = stmt.executeQuery();
+                        
+                        while(rs.next()){                           
+                            int customerID = rs.getInt("CUSTOMER_ID");
+                            result.add(findCustomer(customerID));
+
+                            
+                        }
+			// Définir la valeur du paramètre
+			return result;
+		} catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
 	}
+
+
+	
 
 }
