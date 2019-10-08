@@ -150,9 +150,7 @@ public class DAO {
                         
                         while(rs.next()){                           
                             int customerID = rs.getInt("CUSTOMER_ID");
-                            result.add(findCustomer(customerID));
-
-                            
+                            result.add(findCustomer(customerID));    
                         }
 			// Définir la valeur du paramètre
 			return result;
