@@ -64,6 +64,7 @@ public class DAO {
 			PreparedStatement stmt = connection.prepareStatement(sql)) {
 			// Définir la valeur du paramètre
 			stmt.setInt(1, customerId);
+                        
 
 			return stmt.executeUpdate();
 
@@ -80,7 +81,26 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	public int numberOfOrdersForCustomer(int customerId) throws DAOException {
-		throw new UnsupportedOperationException("Pas encore implémenté");
+            int result = 0;
+            String sql = "SELECT COUNT(*) AS NUMBER FROM PURCHASE_ORDER WHERE CUSTOMER_ID = ?";
+                    
+            	
+                try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)){
+                        stmt.setInt(1, customerId);
+                        ResultSet rs = stmt.executeQuery();
+                        rs.next();
+			// Définir la valeur du paramètre
+			
+                        
+                        result = rs.getInt("NUMBER");
+			
+
+		} catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+               return (result);
 	}
 
 	/**
